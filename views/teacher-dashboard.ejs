@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель учителя - Электронный учебник по PHP</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">PHP Course</a>
+      <div class="nav-links">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <span class="welcome">Привет, <%= user.username %>!</span>
+          <% if (user.role === 'student') { %>
+            <a href="/dashboard">Мой кабинет</a>
+            <a href="/final-test">Итоговый тест</a>
+          <% } else if (user.role === 'teacher') { %>
+            <a href="/teacher/dashboard">Панель учителя</a>
+            <a href="/teacher/questions">Управление вопросами</a>
+          <% } %>
+          <a href="/logout" class="btn-logout">Выход</a>
+        <% } else { %>
+          <a href="/login">Вход</a>
+          <a href="/register" class="btn-register">Регистрация</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <h1>👨‍🏫 Панель учителя</h1>
+    
+    <div class="teacher-controls">
+      <a href="/teacher/questions" class="btn btn-primary">Управление вопросами</a>
+      <a href="/teacher/dashboard" class="btn btn-secondary">Обновить</a>
+    </div>
+
+    <h2>Студенты и их прогресс</h2>
+    
+    <% if (students.length === 0) { %>
+      <div class="alert alert-info">
+        <p>Пока нет зарегистрированных студентов.</p>
+      </div>
+    <% } else { %>
+      <div class="students-table-container">
+        <table class="students-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Имя пользователя</th>
+              <th>Дата регистрации</th>
+              <th>Пройдено модулей</th>
+              <th>Итоговый тест (балл)</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% students.forEach(student => { %>
+              <tr>
+                <td><%= student.id %></td>
+                <td><%= student.username %></td>
+                <td><%= new Date(student.created_at).toLocaleDateString('ru-RU') %></td>
+                <td>
+                  <span class="badge badge-info"><%= student.completedModules %></span>
+                </td>
+                <td>
+                  <% if (student.finalTestScore > 0) { %>
+                    <span class="badge <%= student.finalTestScore >= 70 ? 'badge-success' : 'badge-warning' %>">
+                      <%= student.finalTestScore %>%
+                    </span>
+                  <% } else { %>
+                    <span class="badge badge-warning">Не сдан</span>
+                  <% } %>
+                </td>
+                <td>
+                  <a href="/teacher/student/<%= student.id %>" class="btn btn-sm btn-secondary">Подробно</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+
+    <div class="teacher-summary">
+      <h2>Общая статистика</h2>
+      <div class="summary-cards">
+        <div class="summary-card">
+          <h3><%= students.length %></h3>
+          <p>Зарегистрировано студентов</p>
+        </div>
+        <div class="summary-card">
+          <h3><%= students.filter(s => s.completedModules > 0).length %></h3>
+          <p>Студентов прошли хотя бы 1 модуль</p>
+        </div>
+        <div class="summary-card">
+          <h3><%= students.filter(s => s.finalTestScore >= 70).length %></h3>
+          <p>Студентов сдали итоговый тест</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Электронный учебник по PHP. Дипломная работа.</p>
+    </div>
+  </footer>
+</body>
+</html>

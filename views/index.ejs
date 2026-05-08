@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Главная - Электронный учебник по PHP</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">PHP Course</a>
+      <div class="nav-links">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <span class="welcome">Привет, <%= user.username %>!</span>
+          <% if (user.role === 'student') { %>
+            <a href="/dashboard">Мой кабинет</a>
+            <a href="/final-test">Итоговый тест</a>
+          <% } else if (user.role === 'teacher') { %>
+            <a href="/teacher/dashboard">Панель учителя</a>
+            <a href="/teacher/questions">Управление вопросами</a>
+          <% } %>
+          <a href="/logout" class="btn-logout">Выход</a>
+        <% } else { %>
+          <a href="/login">Вход</a>
+          <a href="/register" class="btn-register">Регистрация</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <div class="hero">
+      <h1>Электронный учебник по PHP</h1>
+      <p class="subtitle">Изучайте серверное программирование на языке PHP с нуля до профессионала</p>
+      
+      <div class="features">
+        <div class="feature-card">
+          <h3>📚 8 Модулей</h3>
+          <p>От основ синтаксиса до объектно-ориентированного программирования и безопасности</p>
+        </div>
+        <div class="feature-card">
+          <h3>✅ Тесты после каждого модуля</h3>
+          <p>Проверяйте свои знания с помощью тестовых заданий</p>
+        </div>
+        <div class="feature-card">
+          <h3>🎓 Итоговый экзамен</h3>
+          <p>Комплексный тест по всему курсу для закрепления материала</p>
+        </div>
+        <div class="feature-card">
+          <h3>👨‍🏫 Контроль для учителей</h3>
+          <p>Преподаватели могут отслеживать прогресс студентов и управлять тестами</p>
+        </div>
+      </div>
+
+      <% if (!user) { %>
+        <div class="cta-buttons">
+          <a href="/register" class="btn btn-primary">Начать обучение</a>
+          <a href="/login" class="btn btn-secondary">Войти</a>
+        </div>
+      <% } else { %>
+        <div class="cta-buttons">
+          <a href="/dashboard" class="btn btn-primary">Перейти к обучению</a>
+        </div>
+      <% } %>
+    </div>
+
+    <section class="program-section">
+      <h2>Программа курса</h2>
+      <div class="modules-preview">
+        <div class="module-preview-item">
+          <span class="module-number">1</span>
+          <h4>Введение в PHP</h4>
+          <p>Основы языка, синтаксис, переменные, типы данных</p>
+        </div>
+        <div class="module-preview-item">
+          <span class="module-number">2</span>
+          <h4>Управляющие конструкции</h4>
+          <p>Условные операторы, циклы, switch</p>
+        </div>
+        <div class="module-preview-item">
+          <span class="module-number">3</span>
+          <h4>Функции в PHP</h4>
+          <p>Создание функций, параметры, возвращаемые значения</p>
+        </div>
+        <div class="module-preview-item">
+          <span class="module-number">4</span>
+          <h4>Массивы в PHP</h4>
+          <p>Индексированные и ассоциативные массивы, функции обработки</p>
+        </div>
+        <div class="module-preview-item">
+          <span class="module-number">5</span>
+          <h4>Работа с формами и данными</h4>
+          <p>$_GET, $_POST, сессии, cookie</p>
+        </div>
+        <div class="module-preview-item">
+          <span class="module-number">6</span>
+          <h4>Работа с базой данных</h4>
+          <p>PDO, подготовленные выражения, CRUD операции</p>
+        </div>
+        <div class="module-preview-item">
+          <span class="module-number">7</span>
+          <h4>Объектно-ориентированное программирование</h4>
+          <p>Классы, объекты, наследование, инкапсуляция, полиморфизм</p>
+        </div>
+        <div class="module-preview-item">
+          <span class="module-number">8</span>
+          <h4>Безопасность в PHP</h4>
+          <p>Защита от XSS, SQL инъекций, CSRF, хеширование паролей</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Электронный учебник по PHP. Дипломная работа.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный кабинет - Электронный учебник по PHP</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">PHP Course</a>
+      <div class="nav-links">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <span class="welcome">Привет, <%= user.username %>!</span>
+          <% if (user.role === 'student') { %>
+            <a href="/dashboard">Мой кабинет</a>
+            <a href="/final-test">Итоговый тест</a>
+          <% } else if (user.role === 'teacher') { %>
+            <a href="/teacher/dashboard">Панель учителя</a>
+            <a href="/teacher/questions">Управление вопросами</a>
+          <% } %>
+          <a href="/logout" class="btn-logout">Выход</a>
+        <% } else { %>
+          <a href="/login">Вход</a>
+          <a href="/register" class="btn-register">Регистрация</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <h1>Личный кабинет студента</h1>
+    
+    <div class="progress-summary">
+      <h2>Ваш прогресс</h2>
+      <div class="summary-cards">
+        <div class="summary-card">
+          <h3><%= modules.length %></h3>
+          <p>Всего модулей</p>
+        </div>
+        <div class="summary-card">
+          <h3><%= Object.keys(progress).length %></h3>
+          <p>Пройдено тестов</p>
+        </div>
+        <div class="summary-card">
+          <h3><%= finalTestProgress.completed_count %></h3>
+          <p>Итоговых тестов сдано</p>
+        </div>
+        <div class="summary-card">
+          <h3><%= finalTestProgress.best_score || 0 %>%</h3>
+          <p>Лучший результат итогового теста</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Модули курса</h2>
+    <div class="modules-list">
+      <% modules.forEach(module => { %>
+        <div class="module-card">
+          <div class="module-header">
+            <h3><%= module.title %></h3>
+            <% if (progress[module.id]) { %>
+              <span class="badge badge-success">Пройдено: <%= progress[module.id].completed %> раз</span>
+              <span class="badge badge-info">Лучший балл: <%= progress[module.id].best_score %>%</span>
+            <% } else { %>
+              <span class="badge badge-warning">Не пройдено</span>
+            <% } %>
+          </div>
+          <p class="module-description"><%= module.description %></p>
+          <div class="module-actions">
+            <a href="/module/<%= module.id %>" class="btn btn-secondary">Изучить материал</a>
+            <a href="/module/<%= module.id %>/test" class="btn btn-primary">Пройти тест</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="final-test-section">
+      <h2>Итоговое тестирование</h2>
+      <div class="module-card final-test-card">
+        <div class="module-header">
+          <h3>🎓 Итоговый экзамен по курсу PHP</h3>
+          <% if (finalTestProgress.completed_count > 0) { %>
+            <span class="badge badge-success">Сдано: <%= finalTestProgress.completed_count %> раз</span>
+            <span class="badge badge-info">Лучший балл: <%= finalTestProgress.best_score %>%</span>
+          <% } else { %>
+            <span class="badge badge-warning">Не сдан</span>
+          <% } %>
+        </div>
+        <p class="module-description">Комплексный тест по всем темам курса. Содержит 10 вопросов различных типов.</p>
+        <div class="module-actions">
+          <a href="/final-test" class="btn btn-primary btn-large">Начать итоговый тест</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Электронный учебник по PHP. Дипломная работа.</p>
+    </div>
+  </footer>
+</body>
+</html>

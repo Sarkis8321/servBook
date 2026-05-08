@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= module.title %> - Электронный учебник по PHP</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">PHP Course</a>
+      <div class="nav-links">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <span class="welcome">Привет, <%= user.username %>!</span>
+          <% if (user.role === 'student') { %>
+            <a href="/dashboard">Мой кабинет</a>
+            <a href="/final-test">Итоговый тест</a>
+          <% } else if (user.role === 'teacher') { %>
+            <a href="/teacher/dashboard">Панель учителя</a>
+            <a href="/teacher/questions">Управление вопросами</a>
+          <% } %>
+          <a href="/logout" class="btn-logout">Выход</a>
+        <% } else { %>
+          <a href="/login">Вход</a>
+          <a href="/register" class="btn-register">Регистрация</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <div class="breadcrumb">
+      <a href="/dashboard">← Назад к модулям</a>
+    </div>
+
+    <article class="module-content">
+      <h1><%= module.title %></h1>
+      <p class="module-description-large"><%= module.description %></p>
+      
+      <% if (completedTests > 0) { %>
+        <div class="alert alert-success">
+          ✓ Вы уже прошли тест по этому модулю <%= completedTests %> раз(а)
+        </div>
+      <% } %>
+
+      <div class="content-body">
+        <%- module.content %>
+      </div>
+
+      <div class="module-navigation">
+        <a href="/module/<%= module.id %>/test" class="btn btn-primary btn-large">
+          Пройти тест по модулю
+        </a>
+        <a href="/dashboard" class="btn btn-secondary">
+          Вернуться к списку модулей
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Электронный учебник по PHP. Дипломная работа.</p>
+    </div>
+  </footer>
+</body>
+</html>

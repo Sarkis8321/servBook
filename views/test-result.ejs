@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Результат теста - Электронный учебник по PHP</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">PHP Course</a>
+      <div class="nav-links">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <span class="welcome">Привет, <%= user.username %>!</span>
+          <% if (user.role === 'student') { %>
+            <a href="/dashboard">Мой кабинет</a>
+            <a href="/final-test">Итоговый тест</a>
+          <% } else if (user.role === 'teacher') { %>
+            <a href="/teacher/dashboard">Панель учителя</a>
+            <a href="/teacher/questions">Управление вопросами</a>
+          <% } %>
+          <a href="/logout" class="btn-logout">Выход</a>
+        <% } else { %>
+          <a href="/login">Вход</a>
+          <a href="/register" class="btn-register">Регистрация</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <div class="result-card">
+      <h1><%= isFinal ? '🎓 Результат итогового экзамена' : '✅ Результат теста' %></h1>
+      
+      <div class="score-display">
+        <div class="score-circle <%= score >= 70 ? 'success' : (score >= 50 ? 'warning' : 'danger') %>">
+          <span class="score-value"><%= score %>%</span>
+        </div>
+      </div>
+      
+      <div class="result-details">
+        <p class="result-stat">Правильных ответов: <strong><%= correctAnswers %> из <%= totalQuestions %></strong></p>
+        
+        <% if (score >= 70) { %>
+          <div class="alert alert-success">
+            <h3>🎉 Поздравляем!</h3>
+            <p>Вы успешно прошли тест! Ваш результат превышает проходной балл (70%).</p>
+          </div>
+        <% } else if (score >= 50) { %>
+          <div class="alert alert-warning">
+            <h3>⚠️ Неплохо!</h3>
+            <p>Вы набрали больше половины баллов, но рекомендуется повторить материал и пройти тест снова.</p>
+          </div>
+        <% } else { %>
+          <div class="alert alert-error">
+            <h3>📚 Нужно подучить</h3>
+            <p>Ваш результат ниже проходного балла. Пожалуйста, повторите материал модуля и попробуйте снова.</p>
+          </div>
+        <% } %>
+      </div>
+      
+      <div class="result-actions">
+        <% if (isFinal) { %>
+          <a href="/dashboard" class="btn btn-primary">Вернуться в кабинет</a>
+          <% if (score < 70) { %>
+            <a href="/final-test" class="btn btn-secondary">Пройти тест снова</a>
+          <% } %>
+        <% } else { %>
+          <a href="/module/<%= typeof moduleId !== 'undefined' ? moduleId : '' %>" class="btn btn-primary">Вернуться к модулю</a>
+          <a href="/dashboard" class="btn btn-secondary">К списку модулей</a>
+          <a href="/module/<%= typeof moduleId !== 'undefined' ? moduleId : '' %>/test" class="btn btn-secondary">Пройти тест снова</a>
+        <% } %>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Электронный учебник по PHP. Дипломная работа.</p>
+    </div>
+  </footer>
+</body>
+</html>

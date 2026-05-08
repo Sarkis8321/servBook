@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= student.username %> - Успеваемость - Электронный учебник по PHP</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">PHP Course</a>
+      <div class="nav-links">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <span class="welcome">Привет, <%= user.username %>!</span>
+          <% if (user.role === 'student') { %>
+            <a href="/dashboard">Мой кабинет</a>
+            <a href="/final-test">Итоговый тест</a>
+          <% } else if (user.role === 'teacher') { %>
+            <a href="/teacher/dashboard">Панель учителя</a>
+            <a href="/teacher/questions">Управление вопросами</a>
+          <% } %>
+          <a href="/logout" class="btn-logout">Выход</a>
+        <% } else { %>
+          <a href="/login">Вход</a>
+          <a href="/register" class="btn-register">Регистрация</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <div class="breadcrumb">
+      <a href="/teacher/dashboard">← Назад к панели учителя</a>
+    </div>
+
+    <h1>📊 Успеваемость студента: <%= student.username %></h1>
+
+    <div class="student-info-card">
+      <h2>Информация о студенте</h2>
+      <p><strong>ID:</strong> <%= student.id %></p>
+      <p><strong>Дата регистрации:</strong> <%= new Date(student.created_at).toLocaleDateString('ru-RU') %></p>
+    </div>
+
+    <h2>Прогресс по модулям</h2>
+    
+    <% if (progress.length === 0) { %>
+      <div class="alert alert-info">
+        <p>Студент еще не прошел ни одного теста.</p>
+      </div>
+    <% } else { %>
+      <div class="modules-progress-list">
+        <% modules.forEach(module => { %>
+          <% const moduleProgress = progress.find(p => p.module_id === module.id); %>
+          <div class="module-progress-card">
+            <div class="module-progress-header">
+              <h3><%= module.title %></h3>
+              <% if (moduleProgress) { %>
+                <span class="badge <%= moduleProgress.score >= 70 ? 'badge-success' : 'badge-warning' %>">
+                  <%= moduleProgress.score %>%
+                </span>
+              <% } else { %>
+                <span class="badge badge-warning">Не пройдено</span>
+              <% } %>
+            </div>
+            <p class="module-description"><%= module.description %></p>
+            <% if (moduleProgress) { %>
+              <p class="progress-date">Пройден: <%= new Date(moduleProgress.completed_at).toLocaleDateString('ru-RU') %></p>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <h2>Итоговый экзамен</h2>
+    <div class="final-test-result-card">
+      <% if (finalTestResult && finalTestResult.score !== null) { %>
+        <div class="score-display">
+          <div class="score-circle <%= finalTestResult.score >= 70 ? 'success' : (finalTestResult.score >= 50 ? 'warning' : 'danger') %>">
+            <span class="score-value"><%= finalTestResult.score %>%</span>
+          </div>
+        </div>
+        <p class="result-date">Сдан: <%= finalTestResult.completed_at ? new Date(finalTestResult.completed_at).toLocaleDateString('ru-RU') : 'Н/Д' %></p>
+        
+        <% if (finalTestResult.score >= 70) { %>
+          <div class="alert alert-success">
+            <p>✅ Студент успешно сдал итоговый экзамен!</p>
+          </div>
+        <% } else { %>
+          <div class="alert alert-warning">
+            <p>⚠️ Студент не набрал проходной балл (70%). Рекомендуется повторное изучение материала.</p>
+          </div>
+        <% } %>
+      <% } else { %>
+        <div class="alert alert-info">
+          <p>Студент еще не сдавал итоговый экзамен.</p>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="teacher-actions">
+      <a href="/teacher/dashboard" class="btn btn-primary">Назад к списку студентов</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Электронный учебник по PHP. Дипломная работа.</p>
+    </div>
+  </footer>
+</body>
+</html>
