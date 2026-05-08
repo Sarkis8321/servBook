@@ -208,15 +208,27 @@ app.post('/submit-test', requireAuth, (req, res) => {
     
     totalQuestions++;
     
+    // Нормализуем selectedAnswers в массив
+    let selectedAnswersArray = [];
+    if (Array.isArray(selectedAnswers)) {
+      selectedAnswersArray = selectedAnswers;
+    } else if (typeof selectedAnswers === 'string') {
+      selectedAnswersArray = [selectedAnswers];
+    } else if (selectedAnswers === undefined || selectedAnswers === null) {
+      selectedAnswersArray = [];
+    } else {
+      selectedAnswersArray = [String(selectedAnswers)];
+    }
+    
     const correctAnswersForQuestion = db.prepare('SELECT answer_text FROM answers WHERE question_id = ? AND is_correct = 1').all(questionId);
     const correctAnswerTexts = correctAnswersForQuestion.map(a => a.answer_text);
     
     let isCorrect = false;
     if (question.question_type === 'single') {
-      const selectedAnswer = db.prepare('SELECT answer_text FROM answers WHERE id = ?').get(parseInt(selectedAnswers[0]));
+      const selectedAnswer = db.prepare('SELECT answer_text FROM answers WHERE id = ?').get(parseInt(selectedAnswersArray[0]));
       isCorrect = selectedAnswer && correctAnswerTexts.includes(selectedAnswer.answer_text);
     } else if (question.question_type === 'multiple') {
-      const selectedAnswerTexts = selectedAnswers.map(id => {
+      const selectedAnswerTexts = selectedAnswersArray.map(id => {
         const ans = db.prepare('SELECT answer_text FROM answers WHERE id = ?').get(parseInt(id));
         return ans ? ans.answer_text : null;
       }).filter(a => a !== null);
