@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= isFinal ? 'Итоговый тест' : 'Тест по модулю' %> - Электронный учебник по PHP</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">PHP Course</a>
+      <div class="nav-links">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <span class="welcome">Привет, <%= user.username %>!</span>
+          <% if (user.role === 'student') { %>
+            <a href="/dashboard">Мой кабинет</a>
+            <a href="/final-test">Итоговый тест</a>
+          <% } else if (user.role === 'teacher') { %>
+            <a href="/teacher/dashboard">Панель учителя</a>
+            <a href="/teacher/questions">Управление вопросами</a>
+          <% } %>
+          <a href="/logout" class="btn-logout">Выход</a>
+        <% } else { %>
+          <a href="/login">Вход</a>
+          <a href="/register" class="btn-register">Регистрация</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <h1><%= isFinal ? '🎓 Итоговый экзамен по курсу PHP' : 'Тест по модулю' %></h1>
+    
+    <form action="/submit-test" method="POST" id="test-form" class="test-form">
+      <input type="hidden" name="moduleId" value="<%= moduleId || '' %>">
+      <input type="hidden" name="isFinal" value="<%= isFinal %>">
+      
+      <% questions.forEach((question, qIndex) => { %>
+        <div class="question-card">
+          <h3>Вопрос <%= qIndex + 1 %>: <%= question.question_text %></h3>
+          <input type="hidden" name="question_type_<%= question.id %>" value="<%= question.question_type %>">
+          
+          <% if (question.question_type === 'single') { %>
+            <div class="answers-list">
+              <% question.answers.forEach((answer, aIndex) => { %>
+                <label class="answer-option">
+                  <input type="radio" name="answers[<%= question.id %>]" value="<%= answer.id %>" required>
+                  <span><%= answer.answer_text %></span>
+                </label>
+              <% }) %>
+            </div>
+          <% } else if (question.question_type === 'multiple') { %>
+            <div class="answers-list">
+              <% question.answers.forEach((answer, aIndex) => { %>
+                <label class="answer-option">
+                  <input type="checkbox" name="answers[<%= question.id %>]" value="<%= answer.id %>">
+                  <span><%= answer.answer_text %></span>
+                </label>
+              <% }) %>
+            </div>
+            <p class="hint">Выберите все правильные ответы</p>
+          <% } %>
+        </div>
+      <% }) %>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-large">Завершить тест</button>
+        <a href="<%= isFinal ? '/dashboard' : '/module/' + moduleId %>" class="btn btn-secondary">Отмена</a>
+      </div>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Электронный учебник по PHP. Дипломная работа.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Обработка множественного выбора
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const name = this.name;
+        const checkboxes = document.querySelectorAll(`input[name="${name}"]`);
+        checkboxes.forEach(cb => {
+          if (cb !== this) {
+            // Можно добавить логику ограничения количества выборов
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
